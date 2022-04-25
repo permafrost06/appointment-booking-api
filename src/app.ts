@@ -75,6 +75,7 @@ const server = http.createServer(async (req, res) => {
       // get teacher data
       const updatedTeacherObj: string = (await getReqData(req)) as string;
       const updated_teacher = await teachersController.updateTeacher(
+        id,
         JSON.parse(updatedTeacherObj)
       );
       // set the status code and content-type

@@ -1,0 +1,20 @@
+{
+  "name": "appointment-booking",
+  "version": "1.0.0",
+  "description": "Node.js backend api server for managing teacher-student appointments.",
+  "main": "dist/app.js",
+  "scripts": {
+    "start": "tsc && node dist/app.js",
+    "lint": "eslint . --ext .ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "permafrost06",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^17.0.27",
+    "@typescript-eslint/eslint-plugin": "^5.21.0",
+    "@typescript-eslint/parser": "^5.21.0",
+    "eslint": "^8.14.0",
+    "typescript": "^4.6.3"
+  }
+}

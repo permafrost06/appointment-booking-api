@@ -37,12 +37,8 @@ export class TeacherController {
     }
   }
 
-  async createTeacher(newTeacherObj: Teacher): Promise<Teacher> {
-    const newTeacher = {
-      _id: Math.random().toString(36).slice(2),
-      ...newTeacherObj,
-    };
-
+  async createTeacher(newTeacher: Teacher): Promise<Teacher> {
+    console.log(newTeacher);
     try {
       const response = await TeachersDB.put(newTeacher);
 

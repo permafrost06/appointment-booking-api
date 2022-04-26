@@ -37,12 +37,7 @@ export class StudentController {
     }
   }
 
-  async createStudent(newStudentObj: Student): Promise<Student> {
-    const newStudent = {
-      _id: Math.random().toString(36).slice(2),
-      ...newStudentObj,
-    };
-
+  async createStudent(newStudent: Student): Promise<Student> {
     try {
       const response = await StudentsDB.put(newStudent);
 

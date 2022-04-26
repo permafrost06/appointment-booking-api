@@ -50,7 +50,7 @@ const server = http.createServer(async (req, res) => {
       // get the id from url
       const id = req.url.split("/")[3];
       // delete todo
-      const message: string = teachersController.deleteTeacher(id);
+      const message: string = await teachersController.deleteTeacher(id);
       // set the status code and content-type
       res.writeHead(200, { "Content-Type": "application/json" });
       // send the message
@@ -95,13 +95,18 @@ const server = http.createServer(async (req, res) => {
     // get the data sent along
     const newTeacherObj: string = (await getReqData(req)) as string;
     // create the todo
-    const teacher = await teachersController.createTeacher(
-      JSON.parse(newTeacherObj)
-    );
-    // set the status code and content-type
-    res.writeHead(200, { "Content-Type": "application/json" });
-    //send the todo
-    res.end(JSON.stringify(teacher));
+    try {
+      const teacher = await teachersController.createTeacher(
+        JSON.parse(newTeacherObj)
+      );
+      // set the status code and content-type
+      res.writeHead(200, { "Content-Type": "application/json" });
+      //send the todo
+      res.end(JSON.stringify(teacher));
+    } catch (error) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: error }));
+    }
   }
 
   // No route present

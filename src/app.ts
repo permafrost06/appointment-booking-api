@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 5000;
 
 const teachersController = new TeacherController();
 const studentsController = new StudentController();
+const adminController = new AdminController();
 
 const server = http.createServer(async (req, res) => {
   if (req.url === "/api/teachers/login" && req.method === "POST") {
@@ -25,6 +26,25 @@ const server = http.createServer(async (req, res) => {
       res.end(JSON.stringify({ message: "invalid credentials provided" }));
     }
   } else if (req.url === "/api/teachers" && req.method === "GET") {
+    if (!req.headers.authorization) {
+      res.writeHead(403);
+      res.end();
+      return;
+    }
+    const authHeader = req.headers.authorization;
+
+    if (
+      !(
+        adminController.isAdmin(authHeader) ||
+        teachersController.isTeacher(authHeader) ||
+        studentsController.isStudent(authHeader)
+      )
+    ) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "the user does not have permission" }));
+      return;
+    }
+
     const teachers = await teachersController.getAllTeachers();
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(teachers));
@@ -32,6 +52,25 @@ const server = http.createServer(async (req, res) => {
     req.url.match(/\/api\/teachers\/([0-9a-zA-Z]+)/) &&
     req.method === "GET"
   ) {
+    if (!req.headers.authorization) {
+      res.writeHead(403);
+      res.end();
+      return;
+    }
+    const authHeader = req.headers.authorization;
+
+    if (
+      !(
+        adminController.isAdmin(authHeader) ||
+        teachersController.isTeacher(authHeader) ||
+        studentsController.isStudent(authHeader)
+      )
+    ) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "the user does not have permission" }));
+      return;
+    }
+
     try {
       const id = req.url.split("/")[3];
       const teacher = await teachersController.getTeacher(id);
@@ -50,7 +89,7 @@ const server = http.createServer(async (req, res) => {
       res.end();
       return;
     }
-    if (!new AdminController().isAdmin(req.headers.authorization)) {
+    if (!adminController.isAdmin(req.headers.authorization)) {
       res.writeHead(401, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ message: "the user does not have permission" }));
       return;
@@ -88,7 +127,7 @@ const server = http.createServer(async (req, res) => {
       res.end();
       return;
     }
-    if (!new AdminController().isAdmin(req.headers.authorization)) {
+    if (!adminController.isAdmin(req.headers.authorization)) {
       res.writeHead(401, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ message: "the user does not have permission" }));
       return;
@@ -120,6 +159,25 @@ const server = http.createServer(async (req, res) => {
       res.end(JSON.stringify({ message: "invalid credentials provided" }));
     }
   } else if (req.url === "/api/students" && req.method === "GET") {
+    if (!req.headers.authorization) {
+      res.writeHead(403);
+      res.end();
+      return;
+    }
+    const authHeader = req.headers.authorization;
+
+    if (
+      !(
+        adminController.isAdmin(authHeader) ||
+        teachersController.isTeacher(authHeader) ||
+        studentsController.isStudent(authHeader)
+      )
+    ) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "the user does not have permission" }));
+      return;
+    }
+
     const students = await studentsController.getAllStudents();
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(students));
@@ -127,6 +185,25 @@ const server = http.createServer(async (req, res) => {
     req.url.match(/\/api\/students\/([0-9a-zA-Z]+)/) &&
     req.method === "GET"
   ) {
+    if (!req.headers.authorization) {
+      res.writeHead(403);
+      res.end();
+      return;
+    }
+    const authHeader = req.headers.authorization;
+
+    if (
+      !(
+        adminController.isAdmin(authHeader) ||
+        teachersController.isTeacher(authHeader) ||
+        studentsController.isStudent(authHeader)
+      )
+    ) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "the user does not have permission" }));
+      return;
+    }
+
     try {
       const id = req.url.split("/")[3];
       const student = await studentsController.getStudent(id);
@@ -145,7 +222,7 @@ const server = http.createServer(async (req, res) => {
       res.end();
       return;
     }
-    if (!new AdminController().isAdmin(req.headers.authorization)) {
+    if (!adminController.isAdmin(req.headers.authorization)) {
       res.writeHead(401, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ message: "the user does not have permission" }));
       return;
@@ -183,7 +260,7 @@ const server = http.createServer(async (req, res) => {
       res.end();
       return;
     }
-    if (!new AdminController().isAdmin(req.headers.authorization)) {
+    if (!adminController.isAdmin(req.headers.authorization)) {
       res.writeHead(401, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ message: "the user does not have permission" }));
       return;
@@ -203,7 +280,7 @@ const server = http.createServer(async (req, res) => {
   } else if (req.url === "/api/admin/login" && req.method === "POST") {
     const loginRequestObject = JSON.parse(await getReqData(req));
     try {
-      const token = new AdminController().signIn(
+      const token = adminController.signIn(
         loginRequestObject.username,
         loginRequestObject.password
       );

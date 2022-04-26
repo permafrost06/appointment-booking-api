@@ -41,10 +41,11 @@ export class StudentController {
     };
 
     try {
-      await StudentsDB.put(newStudent);
+      const response = await StudentsDB.put(newStudent);
 
       this.getFromDB();
 
+      newStudent._rev = response.rev;
       return newStudent;
     } catch (e) {
       throw `StudentsController Error: Couldn't create student - ${e.message}`;
@@ -59,10 +60,11 @@ export class StudentController {
     }
 
     try {
-      await StudentsDB.put(updatedStudentObj);
+      const response = await StudentsDB.put(updatedStudentObj);
 
       this.getFromDB();
 
+      updatedStudentObj._rev = response.rev;
       return updatedStudentObj;
     } catch (e) {
       throw `StudentsController Error: Couldn't update student - ${e.message}`;

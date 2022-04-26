@@ -135,9 +135,10 @@ export class TeacherController {
       }
 
       const decoded = jwt.verify(token.split(" ")[1], this.jwtSecretKey) as Dec;
+      console.log(decoded);
 
-      if (!(decoded.userLevel === "teacher")) return decoded._id;
-      else throw `user is not teacher`;
+      if (!(decoded.userLevel === "teacher")) throw `user is not teacher`;
+      else return decoded._id;
     } catch (e) {
       console.log(e);
       throw `invalid token`;

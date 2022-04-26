@@ -116,7 +116,7 @@ const server = http.createServer(async (req, res) => {
       res.end(JSON.stringify({ message: error }));
     }
   } else if (req.url === "/api/students" && req.method === "POST") {
-    const newStudentObj: string = (await getReqData(req)) as string;
+    const newStudentObj: string = await getReqData(req);
     try {
       const student = await studentsController.createStudent(
         JSON.parse(newStudentObj)

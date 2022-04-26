@@ -105,8 +105,8 @@ export class TeacherController {
         };
 
         return jwt.sign(data, this.jwtSecretKey);
-      }
-    }
+      } else throw `invalid credentials`;
+    } else throw `invalid credentials`;
   }
 
   isTeacher(token: string): boolean {

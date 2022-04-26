@@ -13,7 +13,23 @@ const studentsController = new StudentController();
 const adminController = new AdminController();
 
 const server = http.createServer(async (req, res) => {
-  if (req.url === "/api/teachers/login" && req.method === "POST") {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+
+  // intercept OPTIONS method
+  if (req.method == "OPTIONS") {
+    res.writeHead(200);
+    res.end();
+  } else if (req.url === "/api/teachers/login" && req.method === "POST") {
     const loginRequestObject = JSON.parse(await getReqData(req));
     try {
       const token = teachersController.signIn(

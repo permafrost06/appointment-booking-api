@@ -78,10 +78,10 @@ export class TeacherController {
         TeachersDB.remove(teacherToDelete);
         this.getFromDB();
       } catch (error) {
-        return `Couldn't remove teacher ${error}`;
+        throw `Couldn't remove teacher ${error}`;
       }
     } catch (e) {
-      return `Couldn't find teacher with ${id}`;
+      throw `Couldn't find teacher with ${id}`;
     }
 
     return `Teacher ${id} deleted successfully`;

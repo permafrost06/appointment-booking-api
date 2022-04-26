@@ -25,6 +25,23 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(401, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ message: "invalid credentials provided" }));
     }
+  } else if (req.url === "/api/teachers/signup" && req.method === "POST") {
+    const loginRequestObject = JSON.parse(await getReqData(req));
+
+    const response = await adminController.queueUserSignUpRequest(
+      loginRequestObject.username,
+      loginRequestObject.password,
+      "teacher"
+    );
+
+    if (response) {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          message: "account requested. waiting for admin approval",
+        })
+      );
+    }
   } else if (req.url === "/api/teachers" && req.method === "GET") {
     if (!req.headers.authorization) {
       res.writeHead(403);
@@ -189,6 +206,23 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(401, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ message: "invalid credentials provided" }));
     }
+  } else if (req.url === "/api/students/signup" && req.method === "POST") {
+    const loginRequestObject = JSON.parse(await getReqData(req));
+
+    const response = await adminController.queueUserSignUpRequest(
+      loginRequestObject.username,
+      loginRequestObject.password,
+      "student"
+    );
+
+    if (response) {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          message: "account requested. waiting for admin approval",
+        })
+      );
+    }
   } else if (req.url === "/api/students" && req.method === "GET") {
     if (!req.headers.authorization) {
       res.writeHead(403);
@@ -351,6 +385,26 @@ const server = http.createServer(async (req, res) => {
     } catch (error) {
       res.writeHead(401, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ message: "invalid credentials provided" }));
+    }
+  } else if (req.url === "/api/admin/requests" && req.method === "GET") {
+    if (!req.headers.authorization) {
+      res.writeHead(403);
+      res.end();
+      return;
+    }
+    if (!adminController.isAdmin(req.headers.authorization)) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "the user does not have permission" }));
+      return;
+    }
+
+    try {
+      const requests = await adminController.getUserSignUpRequests();
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ requests }));
+    } catch (e) {
+      res.writeHead(300);
+      res.end();
     }
   }
 

@@ -1,7 +1,7 @@
 import * as jwt from "jsonwebtoken";
 
 export class AdminController {
-  jwtSecretKey = process.env.JWT_SECRET_KEY;
+  jwtSecretKey = "insecure_secret_key";
 
   signIn(username: string, password: string): string {
     if (username === "admin" && password === "password") {

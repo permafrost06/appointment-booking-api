@@ -10,7 +10,21 @@ const teachersController = new TeacherController();
 const studentsController = new StudentController();
 
 const server = http.createServer(async (req, res) => {
-  if (req.url === "/api/teachers" && req.method === "GET") {
+  if (req.url === "/api/teachers/login" && req.method === "POST") {
+    const loginRequestObject = JSON.parse(await getReqData(req));
+    try {
+      const token = teachersController.signIn(
+        loginRequestObject.username,
+        loginRequestObject.password
+      );
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ token }));
+    } catch (error) {
+      console.log(error);
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "invalid credentials provided" }));
+    }
+  } else if (req.url === "/api/teachers" && req.method === "GET") {
     const teachers = await teachersController.getAllTeachers();
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(teachers));
@@ -90,6 +104,20 @@ const server = http.createServer(async (req, res) => {
     } catch (error) {
       res.writeHead(404, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ message: error }));
+    }
+  } else if (req.url === "/api/students/login" && req.method === "POST") {
+    const loginRequestObject = JSON.parse(await getReqData(req));
+    try {
+      const token = studentsController.signIn(
+        loginRequestObject.username,
+        loginRequestObject.password
+      );
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ token }));
+    } catch (error) {
+      console.log(error);
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "invalid credentials provided" }));
     }
   } else if (req.url === "/api/students" && req.method === "GET") {
     const students = await studentsController.getAllStudents();
@@ -174,12 +202,17 @@ const server = http.createServer(async (req, res) => {
     }
   } else if (req.url === "/api/admin/login" && req.method === "POST") {
     const loginRequestObject = JSON.parse(await getReqData(req));
-    const token = new AdminController().signIn(
-      loginRequestObject.username,
-      loginRequestObject.password
-    );
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ token }));
+    try {
+      const token = new AdminController().signIn(
+        loginRequestObject.username,
+        loginRequestObject.password
+      );
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ token }));
+    } catch (error) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "invalid credentials provided" }));
+    }
   }
 
   // No route present

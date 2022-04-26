@@ -1,10 +1,13 @@
 import { Teacher } from "../models/Teacher.model";
 import PouchDB from "pouchdb";
+import * as jwt from "jsonwebtoken";
 
 const TeachersDB = new PouchDB("db/teachers.db");
 
 export class TeacherController {
   allTeachers: Teacher[] = [];
+
+  jwtSecretKey = "insecure_secret_key";
 
   constructor() {
     this.getFromDB();
@@ -85,5 +88,59 @@ export class TeacherController {
     }
 
     return `Teacher ${id} deleted successfully`;
+  }
+
+  signIn(username: string, password: string): string {
+    const matchTeacherArray = this.allTeachers.filter(
+      (teacher) => teacher.email === username
+    );
+
+    if (matchTeacherArray.length) {
+      const teacherObj = matchTeacherArray[0];
+
+      if (teacherObj.password === password) {
+        const data = {
+          userLevel: "teacher",
+          _id: teacherObj._id,
+        };
+
+        return jwt.sign(data, this.jwtSecretKey);
+      }
+    }
+  }
+
+  isTeacher(token: string): boolean {
+    try {
+      interface Dec {
+        userLevel: string;
+        iat: number;
+      }
+
+      const decoded = jwt.verify(token.split(" ")[1], this.jwtSecretKey) as Dec;
+
+      if (decoded.userLevel === "teacher") return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+    return false;
+  }
+
+  getTeacherIDFromToken(token: string): string {
+    try {
+      interface Dec {
+        userLevel: string;
+        _id: string;
+        iat: number;
+      }
+
+      const decoded = jwt.verify(token.split(" ")[1], this.jwtSecretKey) as Dec;
+
+      if (!(decoded.userLevel === "teacher")) return decoded._id;
+      else throw `user is not teacher`;
+    } catch (e) {
+      console.log(e);
+      throw `invalid token`;
+    }
   }
 }

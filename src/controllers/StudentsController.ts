@@ -24,20 +24,16 @@ export class StudentController {
     return this.allStudents;
   }
 
-  // getting a single todo
   async getStudent(id) {
     // get the todo
     const student = this.allStudents.find((student) => student._id === id);
     if (student) {
-      // return the todo
       return student;
     } else {
-      // return an error
       throw `Student with id ${id} not found `;
     }
   }
 
-  // creating a todo
   async createStudent(newStudentObj: Student): Promise<Student> {
     const newStudent = {
       _id: Math.random().toString(36).slice(2),
@@ -55,7 +51,6 @@ export class StudentController {
     }
   }
 
-  // updating a todo
   async updateStudent(id, updatedStudentObj: Student): Promise<Student> {
     try {
       this.getStudent(id);
@@ -74,7 +69,6 @@ export class StudentController {
     }
   }
 
-  // deleting a todo
   async deleteStudent(id: string): Promise<string> {
     try {
       const studentToDelete = await this.getStudent(id);

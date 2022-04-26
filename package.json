@@ -12,6 +12,7 @@
   "author": "permafrost06",
   "license": "MIT",
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^15.11.6",
     "@types/pouchdb": "^6.4.0",
     "@typescript-eslint/eslint-plugin": "^5.21.0",
@@ -21,6 +22,7 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
+    "jsonwebtoken": "^8.5.1",
     "pouchdb": "^7.3.0"
   }
 }

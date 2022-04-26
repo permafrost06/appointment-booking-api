@@ -108,6 +108,37 @@ const server = http.createServer(async (req, res) => {
     req.url.match(/\/api\/teachers\/([0-9a-zA-Z]+)/) &&
     req.method === "PATCH"
   ) {
+    if (!req.headers.authorization) {
+      res.writeHead(403);
+      res.end();
+      return;
+    }
+    const authHeader = req.headers.authorization;
+
+    if (
+      !(
+        adminController.isAdmin(authHeader) ||
+        teachersController.isTeacher(authHeader)
+      )
+    ) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "the user does not have permission" }));
+      return;
+    }
+
+    if (teachersController.isTeacher(authHeader)) {
+      const requestUserID =
+        teachersController.getTeacherIDFromToken(authHeader);
+
+      if (req.url.split("/")[3] !== requestUserID) {
+        res.writeHead(401, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({ message: "the user does not have permission" })
+        );
+        return;
+      }
+    }
+
     try {
       const id = req.url.split("/")[3];
       const updatedTeacherObj: string = (await getReqData(req)) as string;
@@ -241,6 +272,37 @@ const server = http.createServer(async (req, res) => {
     req.url.match(/\/api\/students\/([0-9a-zA-Z]+)/) &&
     req.method === "PATCH"
   ) {
+    if (!req.headers.authorization) {
+      res.writeHead(403);
+      res.end();
+      return;
+    }
+    const authHeader = req.headers.authorization;
+
+    if (
+      !(
+        adminController.isAdmin(authHeader) ||
+        studentsController.isStudent(authHeader)
+      )
+    ) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "the user does not have permission" }));
+      return;
+    }
+
+    if (studentsController.isStudent(authHeader)) {
+      const requestUserID =
+        studentsController.getStudentIDFromToken(authHeader);
+
+      if (req.url.split("/")[3] !== requestUserID) {
+        res.writeHead(401, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({ message: "the user does not have permission" })
+        );
+        return;
+      }
+    }
+
     try {
       const id = req.url.split("/")[3];
       const updatedStudentObj: string = (await getReqData(req)) as string;

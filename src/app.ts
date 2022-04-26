@@ -127,6 +127,14 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(404, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ message: error }));
     }
+  } else if (req.url === "/api/admin/login" && req.method === "POST") {
+    const loginRequestObject = JSON.parse(await getReqData(req));
+    const token = new AdminController().signIn(
+      loginRequestObject.username,
+      loginRequestObject.password
+    );
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ token }));
   }
 
   // No route present

@@ -10,7 +10,7 @@ export class AdminController {
       };
 
       return jwt.sign(data, this.jwtSecretKey);
-    }
+    } else throw `invalid credentials`;
   }
 
   isAdmin(token: string): boolean {

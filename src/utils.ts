@@ -1,4 +1,4 @@
-export const getReqData = (req) => {
+export const getReqData = (req): Promise<string> => {
   return new Promise((resolve, reject) => {
     try {
       let body = "";

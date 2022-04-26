@@ -2,6 +2,8 @@ import * as http from "http";
 import { AdminController } from "./controllers/AdminController";
 import { StudentController } from "./controllers/StudentsController";
 import { TeacherController } from "./controllers/TeachersController";
+import { Student } from "./models/Student.model";
+import { Teacher } from "./models/Teacher.model";
 import { getReqData } from "./utils";
 
 const PORT = process.env.PORT || 5000;
@@ -401,10 +403,98 @@ const server = http.createServer(async (req, res) => {
     try {
       const requests = await adminController.getUserSignUpRequests();
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ requests }));
+      res.end(JSON.stringify(requests));
     } catch (e) {
       res.writeHead(300);
       res.end();
+    }
+  } else if (
+    req.url.match(/\/api\/admin\/requests\/([0-9a-zA-Z]+)\/approve/) &&
+    req.method == "GET"
+  ) {
+    if (!req.headers.authorization) {
+      res.writeHead(403);
+      res.end();
+      return;
+    }
+    if (!adminController.isAdmin(req.headers.authorization)) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "the user does not have permission" }));
+      return;
+    }
+
+    try {
+      const id = req.url.split("/")[4];
+      const requestObj = await adminController.getRequestByID(id);
+
+      if (requestObj.type === "teacher") {
+        try {
+          const teacher = await teachersController.createTeacher({
+            _id: requestObj._id,
+            email: requestObj.username,
+            password: requestObj.password,
+          } as Teacher);
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(teacher));
+        } catch (error) {
+          res.writeHead(404, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ message: error }));
+        }
+      }
+
+      if (requestObj.type === "student") {
+        try {
+          const teacher = await studentsController.createStudent({
+            _id: requestObj._id,
+            email: requestObj.username,
+            password: requestObj.password,
+          } as Student);
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(teacher));
+        } catch (error) {
+          res.writeHead(404, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ message: error }));
+        }
+      }
+
+      try {
+        adminController.deleteRequest(requestObj._id);
+      } catch (e) {
+        console.log(e);
+      }
+    } catch (e) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          message: `request ${req.url.split("/")[4]} not found`,
+        })
+      );
+    }
+  } else if (
+    req.url.match(/\/api\/admin\/requests\/([0-9a-zA-Z]+)\/reject/) &&
+    req.method == "GET"
+  ) {
+    if (!req.headers.authorization) {
+      res.writeHead(403);
+      res.end();
+      return;
+    }
+    if (!adminController.isAdmin(req.headers.authorization)) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "the user does not have permission" }));
+      return;
+    }
+
+    const id = req.url.split("/")[4];
+
+    if (await adminController.deleteRequest(id)) {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({ message: `request ${id} deleted successfully` })
+      );
+    } else {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: `request ${id} not found` }));
     }
   }
 

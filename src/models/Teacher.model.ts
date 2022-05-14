@@ -5,5 +5,6 @@ export interface Teacher {
   password: string;
   course: string;
   department: string;
+  hours: number;
   _rev: string;
 }

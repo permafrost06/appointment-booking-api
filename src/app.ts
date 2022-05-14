@@ -84,6 +84,39 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(teachers));
   } else if (
+    req.url.match(/\/api\/teachers\/([0-9a-zA-Z]+)\/appointments/) &&
+    req.method === "GET"
+  ) {
+    if (!req.headers.authorization) {
+      res.writeHead(403);
+      res.end();
+      return;
+    }
+    const authHeader = req.headers.authorization;
+
+    if (
+      !(
+        adminController.isAdmin(authHeader) ||
+        teachersController.isTeacher(authHeader) ||
+        studentsController.isStudent(authHeader)
+      )
+    ) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "the user does not have permission" }));
+      return;
+    }
+
+    const id = req.url.split("/")[3];
+
+    try {
+      const requests = await teachersController.getTeacherAppointments(id);
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(requests));
+    } catch (e) {
+      res.writeHead(300);
+      res.end();
+    }
+  } else if (
     req.url.match(/\/api\/teachers\/([0-9a-zA-Z]+)/) &&
     req.method === "GET"
   ) {
@@ -183,6 +216,51 @@ const server = http.createServer(async (req, res) => {
       );
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify(updated_teacher));
+    } catch (error) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: error }));
+    }
+  } else if (
+    req.url.match(/\/api\/teachers\/([0-9a-zA-Z]+)\/appointments/) &&
+    req.method === "POST"
+  ) {
+    if (!req.headers.authorization) {
+      res.writeHead(403);
+      res.end();
+      return;
+    }
+    const authHeader = req.headers.authorization;
+
+    if (
+      !(
+        adminController.isAdmin(authHeader) ||
+        teachersController.isTeacher(authHeader) ||
+        studentsController.isStudent(authHeader)
+      )
+    ) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "the user does not have permission" }));
+      return;
+    }
+
+    if (teachersController.isTeacher(authHeader)) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "the user does not have permission" }));
+      return;
+    }
+
+    const newAppointmentObj = JSON.parse(await getReqData(req));
+    const id = req.url.split("/")[3];
+
+    try {
+      const appointment = await teachersController.queueTeacherAppointment(
+        id,
+        newAppointmentObj.student_id,
+        newAppointmentObj.date,
+        newAppointmentObj.time
+      );
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(appointment));
     } catch (error) {
       res.writeHead(404, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ message: error }));

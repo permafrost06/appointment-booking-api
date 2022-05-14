@@ -1,11 +1,14 @@
 import { Teacher } from "../models/Teacher.model";
 import PouchDB from "pouchdb";
 import * as jwt from "jsonwebtoken";
+import { Appointment } from "../models/Appointment.model";
 
 const TeachersDB = new PouchDB("db/teachers.db");
+const AppointmentsDB = new PouchDB("db/appointments.db");
 
 export class TeacherController {
   allTeachers: Teacher[] = [];
+  allAppointments: Appointment[] = [];
 
   jwtSecretKey = "insecure_secret_key";
 
@@ -18,6 +21,14 @@ export class TeacherController {
       const query = await TeachersDB.allDocs({ include_docs: true });
       const docs = query.rows.map(({ doc }) => doc as Teacher);
       this.allTeachers = docs;
+    } catch (e) {
+      console.error(e);
+    }
+
+    try {
+      const query = await AppointmentsDB.allDocs({ include_docs: true });
+      const docs = query.rows.map(({ doc }) => doc as Appointment);
+      this.allAppointments = docs;
     } catch (e) {
       console.error(e);
     }
@@ -38,7 +49,6 @@ export class TeacherController {
   }
 
   async createTeacher(newTeacher: Teacher): Promise<Teacher> {
-    console.log(newTeacher);
     try {
       const response = await TeachersDB.put(newTeacher);
 
@@ -138,6 +148,40 @@ export class TeacherController {
     } catch (e) {
       console.log(e);
       throw `invalid token`;
+    }
+  }
+
+  getTeacherAppointments(id: string): Appointment[] {
+    return this.allAppointments.filter(
+      (appointment) => appointment.teacher_id == id
+    );
+  }
+
+  async queueTeacherAppointment(
+    teacher_id: string,
+    student_id: string,
+    date: string,
+    time: string
+  ) {
+    const appointmentObj: Appointment = {
+      _id: Math.random().toString(36).slice(2),
+      teacher_id,
+      student_id,
+      date,
+      time,
+      approved: false,
+      _rev: "",
+    };
+
+    try {
+      const response = await AppointmentsDB.put(appointmentObj);
+
+      this.getFromDB();
+
+      appointmentObj._rev = response.rev;
+      return appointmentObj;
+    } catch (e) {
+      throw `TeachersController Error: Couldn't create appointment - ${e.message}`;
     }
   }
 }

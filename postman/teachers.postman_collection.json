@@ -1,0 +1,174 @@
+{
+	"info": {
+		"_postman_id": "572df7fe-e2e6-45b6-9ab0-3b3720a25a73",
+		"name": "teachers",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "update teacher",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Michael Douglas\",\r\n    \"email\": \"michael@douglas.com\",\r\n    \"password\": \"12345678\",\r\n    \"course\": \"TQR572\",\r\n    \"department\": \"YYY\",\r\n    \"_id\": \"3yq6t6wyw7x\",\r\n    \"_rev\": \"2-c098e11b9bbe32a3711122d939db18ba\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/api/teachers/3yq6t6wyw7x",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"teachers",
+						"3yq6t6wyw7x"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get teachers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5000/api/teachers",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"teachers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get teacher with id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5000/api/teachers/4545",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"teachers",
+						"4545"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login/get token",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"michael@douglas.com\",\r\n    \"password\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/api/teachers/login",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"teachers",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sign up request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"test@xyz.com\",\r\n    \"password\": \"1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/api/teachers/signup",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"teachers",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{teacher jwt}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "teacher jwt",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTGV2ZWwiOiJ0ZWFjaGVyIiwiX2lkIjoiM3lxNnQ2d3l3N3giLCJpYXQiOjE2NTA5NzU0Njh9.O8wDDwsjpgL0fnrItS4hXsx2-Y3WfRsePPQSyu9L2OU"
+		}
+	]
+}

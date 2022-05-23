@@ -1,14 +1,12 @@
 import { IncomingAPIMessage } from "../SimpleAPI";
 import { ServerResponse } from "http";
 
-import { AdminController } from "../controllers/AdminController";
-import { StudentController } from "../controllers/StudentsController";
-import { TeacherController } from "../controllers/TeachersController";
 import { sendJSON } from "../utils";
-
-const teachersController = new TeacherController();
-const studentsController = new StudentController();
-const adminController = new AdminController();
+import {
+  adminController,
+  studentsController,
+  teachersController,
+} from "../app";
 
 export const verifyUserExists = (
   req: IncomingAPIMessage,

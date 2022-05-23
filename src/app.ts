@@ -15,9 +15,10 @@ import {
   verifyUserExists,
 } from "./middleware";
 
-const teachersController = new TeacherController();
-const studentsController = new StudentController();
-const adminController = new AdminController();
+export const teachersController = new TeacherController();
+export const studentsController = new StudentController();
+export const adminController = new AdminController();
+export const appointmentsController = new AppointmentsController();
 
 const PORT = process.env.PORT || 5000;
 

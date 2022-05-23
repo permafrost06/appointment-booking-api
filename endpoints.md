@@ -1,7 +1,10 @@
 | function                    | method | route                           | protected | permission-level | example                              | req body |
 | --------------------------- | ------ | ------------------------------- | --------- | ---------------- | ------------------------------------ | -------- |
-| teacher signup/request      | POST   | /api/teachers/signup            |           |                  | /api/teachers/signup                 | **\***   |
-| teacher login               | POST   | /api/teachers/login             |           |                  | /api/teachers/login                  | **\***   |
+| teacher signup/request      | POST   | /api/signup/teacher             |           |                  | /api/teachers/signup                 | **\***   |
+| student signup/request      | POST   | /api/signup/student             |           |                  | /api/students/signup                 | **\***   |
+| teacher login               | POST   | /api/login/teacher              |           |                  | /api/teachers/login                  | **\***   |
+| student login               | POST   | /api/login/student              |           |                  | /api/students/login                  | **\***   |
+| admin login                 | POST   | /api/login/admin                |           |                  | /api/admin/login                     | **\***   |
 | create teacher              | POST   | /api/teachers                   | **\***    | admin            | /api/teachers                        | **\***   |
 | get teacher list            | GET    | /api/teachers                   | **\***    | logged in        | /api/teachers                        |          |
 | delete teacher              | DELETE | /api/teachers/:id               | **\***    | admin            | /api/teachers/khoe0u9o               |          |
@@ -9,14 +12,11 @@
 | get teacher with id         | GET    | /api/teachers/:id               | **\***    | logged in        | /api/teachers/khoe0u9o               |          |
 | get appointments of teacher | GET    | /api/teachers/:id/appointments  | **\***    | logged in        | /api/teachers/khoe0u9o/appointments  |          |
 | set appointment request     | POST   | /api/teachers/:id/appointments  | **\***    | admin, student   | /api/teachers/khoe0u9o/appointments  | **\***   |
-| student signup/request      | POST   | /api/students/signup            |           |                  | /api/students/signup                 | **\***   |
-| student login               | POST   | /api/students/login             |           |                  | /api/students/login                  | **\***   |
 | create student              | POST   | /api/students                   | **\***    | admin            | /api/students                        | **\***   |
 | get students                | GET    | /api/students                   | **\***    | logged in        | /api/students                        |          |
 | get student with id         | GET    | /api/students/:id               | **\***    | logged in        | /api/students/khoe0u9o               |          |
 | delete student              | DELETE | /api/students/:id               | **\***    | admin            | /api/students/khoe0u9o               | **\***   |
 | update student              | PATCH  | /api/students/:id               | **\***    | admin, owner     | /api/students/khoe0u9o               | **\***   |
-| admin login                 | POST   | /api/admin/login                |           |                  | /api/admin/login                     | **\***   |
 | get queued requests         | GET    | /api/admin/requests             | **\***    | admin            | /api/admin/requests                  |          |
 | approve request             | GET    | /api/admin/requests/:id/approve | **\***    | admin            | /api/admin/requests/khoe0u9o/approve |          |
 | reject request              | GET    | /api/admin/requests/:id/reject  | **\***    | admin            | /api/admin/requests/khoe0u9o/reject  |          |

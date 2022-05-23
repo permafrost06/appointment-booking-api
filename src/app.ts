@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 5000;
 
 export const app = new SimpleAPI();
 
-app.addEndpoint("POST", "/api/teachers/signup", async (req, res) => {
+app.addEndpoint("POST", "/api/signup/teacher", async (req, res) => {
   const loginRequestObject = req.body.json;
 
   const response = await adminController.queueUserSignUpRequest(
@@ -39,7 +39,7 @@ app.addEndpoint("POST", "/api/teachers/signup", async (req, res) => {
   }
 });
 
-app.addEndpoint("POST", "/api/teachers/login", async (req, res) => {
+app.addEndpoint("POST", "/api/login/teacher", async (req, res) => {
   const loginRequestObject = req.body.json;
   try {
     const token = teachersController.signIn(
@@ -169,7 +169,7 @@ app.addEndpoint(
   }
 );
 
-app.addEndpoint("POST", "/api/students/signup", async (req, res) => {
+app.addEndpoint("POST", "/api/signup/student", async (req, res) => {
   const loginRequestObject = req.body.json;
 
   const response = await adminController.queueUserSignUpRequest(
@@ -185,7 +185,7 @@ app.addEndpoint("POST", "/api/students/signup", async (req, res) => {
   }
 });
 
-app.addEndpoint("POST", "/api/students/login", async (req, res) => {
+app.addEndpoint("POST", "/api/login/student", async (req, res) => {
   const loginRequestObject = req.body.json;
   try {
     const token = studentsController.signIn(
@@ -276,7 +276,7 @@ app.addEndpoint(
   }
 );
 
-app.addEndpoint("POST", "/api/admin/login", async (req, res) => {
+app.addEndpoint("POST", "/api/login/admin", async (req, res) => {
   const loginRequestObject = req.body.json;
   try {
     const token = adminController.signIn(

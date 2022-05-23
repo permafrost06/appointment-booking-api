@@ -2,6 +2,7 @@ import { SimpleAPI } from "./SimpleAPI";
 import { AdminController } from "./controllers/AdminController";
 import { StudentController } from "./controllers/StudentsController";
 import { TeacherController } from "./controllers/TeachersController";
+import { AppointmentsController } from "./controllers/AppointmentsController";
 import { Student } from "./models/Student.model";
 import { Teacher } from "./models/Teacher.model";
 import { sendJSON } from "./utils";
@@ -13,6 +14,8 @@ import {
   isOwnerTeacher,
   isOwnerStudent,
   verifyUserExists,
+  verifyTeacherIDExists,
+  verifyStudentIDExists,
 } from "./middleware";
 
 export const teachersController = new TeacherController();
@@ -134,11 +137,13 @@ app.addEndpoint(
   "GET",
   "/api/teachers/:id/appointments",
   verifyUserExists,
+  verifyTeacherIDExists,
   async (req, res) => {
     const id = req.params.id;
 
     try {
-      const appointments = await teachersController.getTeacherAppointments(id);
+      const appointments =
+        await appointmentsController.getTeacherApprovedAppointments(id);
       sendJSON(res, 200, appointments);
     } catch (e) {
       res.writeHead(300);
@@ -151,13 +156,14 @@ app.addEndpoint(
   "POST",
   "/api/teachers/:id/appointments",
   verifyUserExists,
+  verifyTeacherIDExists,
   hasAppointmentCreateAccess,
   async (req, res) => {
     const newAppointmentObj = req.body.json;
     const id = req.params.id;
 
     try {
-      const appointment = await teachersController.queueTeacherAppointment(
+      const appointment = await appointmentsController.queueAppointment(
         id,
         newAppointmentObj.student_id,
         newAppointmentObj.date,
@@ -273,6 +279,26 @@ app.addEndpoint(
       sendJSON(res, 200, updated_student);
     } catch (error) {
       sendJSON(res, 404, { message: error });
+    }
+  }
+);
+
+app.addEndpoint(
+  "GET",
+  "/api/students/:id/appointments",
+  verifyUserExists,
+  verifyStudentIDExists,
+  async (req, res) => {
+    const id = req.params.id;
+
+    try {
+      const appointments = await appointmentsController.getStudentAppointments(
+        id
+      );
+      sendJSON(res, 200, appointments);
+    } catch (e) {
+      res.writeHead(300);
+      res.end();
     }
   }
 );

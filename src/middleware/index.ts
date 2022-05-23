@@ -140,3 +140,33 @@ export const isOwnerStudent = (
     sendJSON(res, 401, { message: "the user does not have permission" });
   }
 };
+
+export const verifyTeacherIDExists = async (
+  req: IncomingAPIMessage,
+  res: ServerResponse,
+  next
+) => {
+  const id = req.params.id;
+
+  try {
+    await teachersController.getTeacher(id);
+    next();
+  } catch (error) {
+    sendJSON(res, 404, { meassage: error });
+  }
+};
+
+export const verifyStudentIDExists = async (
+  req: IncomingAPIMessage,
+  res: ServerResponse,
+  next
+) => {
+  const id = req.params.id;
+
+  try {
+    await studentsController.getStudent(id);
+    next();
+  } catch (error) {
+    sendJSON(res, 404, { meassage: error });
+  }
+};

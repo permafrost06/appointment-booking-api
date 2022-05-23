@@ -39,7 +39,6 @@ export class TeacherController {
   }
 
   async getTeacher(id) {
-    // get the todo
     const teacher = this.allTeachers.find((teacher) => teacher._id === id);
     if (teacher) {
       return teacher;

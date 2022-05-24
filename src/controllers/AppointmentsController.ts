@@ -49,7 +49,8 @@ export class AppointmentsController {
     teacher_id: string,
     student_id: string,
     date: string,
-    time: string
+    time: string,
+    agenda: string
   ) {
     const teacher = await teachersController.getTeacher(teacher_id);
 
@@ -61,6 +62,7 @@ export class AppointmentsController {
           student_id,
           date,
           time,
+          agenda,
           approved: false,
           _rev: "",
         };

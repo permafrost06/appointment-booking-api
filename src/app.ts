@@ -153,6 +153,26 @@ app.addEndpoint(
 );
 
 app.addEndpoint(
+  "GET",
+  "/api/teachers/:id/appointments/all",
+  verifyUserExists,
+  verifyTeacherIDExists,
+  async (req, res) => {
+    const id = req.params.id;
+
+    try {
+      const appointments = await appointmentsController.getTeacherAppointments(
+        id
+      );
+      sendJSON(res, 200, appointments);
+    } catch (e) {
+      res.writeHead(300);
+      res.end();
+    }
+  }
+);
+
+app.addEndpoint(
   "POST",
   "/api/teachers/:id/appointments",
   verifyUserExists,
@@ -167,7 +187,8 @@ app.addEndpoint(
         id,
         newAppointmentObj.student_id,
         newAppointmentObj.date,
-        newAppointmentObj.time
+        newAppointmentObj.time,
+        newAppointmentObj.agenda
       );
       sendJSON(res, 200, appointment);
     } catch (error) {

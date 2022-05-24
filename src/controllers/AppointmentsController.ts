@@ -140,4 +140,20 @@ export class AppointmentsController {
 
     return `Appointment ${id} deleted successfully`;
   }
+
+  async deleteAppointment(id: string): Promise<string> {
+    try {
+      const appointmentToDelete = await this.getAppointment(id);
+      try {
+        AppointmentsDB.remove(appointmentToDelete);
+        this.getFromDB();
+      } catch (error) {
+        throw `Couldn't remove Appointment ${error}`;
+      }
+    } catch (e) {
+      throw `Couldn't find Appointment with ${id}`;
+    }
+
+    return `Appointment ${id} deleted successfully`;
+  }
 }

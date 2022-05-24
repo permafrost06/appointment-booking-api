@@ -469,4 +469,58 @@ app.addEndpoint(
   }
 );
 
+app.addEndpoint(
+  "DELETE",
+  "/api/admin/appointments/:id",
+  verifyUserExists,
+  isAdmin,
+  async (req, res) => {
+    try {
+      const id = req.params.id;
+      const message: string = await appointmentsController.deleteAppointment(
+        id
+      );
+      sendJSON(res, 200, { message });
+    } catch (error) {
+      sendJSON(res, 404, { message: error });
+    }
+  }
+);
+
+app.addEndpoint(
+  "GET",
+  "/api/admin/appointments/:id/approve",
+  verifyUserExists,
+  isAdmin,
+  async (req, res) => {
+    const id = req.params.id;
+    try {
+      const appointment = await appointmentsController.approveAppointment(id);
+      sendJSON(res, 200, appointment);
+    } catch (e) {
+      res.writeHead(300);
+      res.end();
+    }
+  }
+);
+
+app.addEndpoint(
+  "GET",
+  "/api/admin/appointments/:id/reject",
+  verifyUserExists,
+  isAdmin,
+  async (req, res) => {
+    const id = req.params.id;
+
+    try {
+      const message: string = await appointmentsController.rejectAppointment(
+        id
+      );
+      sendJSON(res, 200, message);
+    } catch (error) {
+      sendJSON(res, 404, { message: error });
+    }
+  }
+);
+
 app.startServer(PORT);

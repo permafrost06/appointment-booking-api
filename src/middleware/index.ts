@@ -4,6 +4,7 @@ import { ServerResponse } from "http";
 import { sendJSON } from "../utils";
 import {
   adminController,
+  appointmentsController,
   studentsController,
   teachersController,
 } from "../app";
@@ -119,7 +120,24 @@ export const isOwnerTeacher = (
     sendJSON(res, 401, { message: "the user does not have permission" });
   }
 };
+export const isAppointmentOwner = (
+  req: IncomingAPIMessage,
+  res: ServerResponse,
+  next
+) => {
+  isOwnerTeacher(req, res, async () => {
+    const appointment = await appointmentsController.getAppointment(
+      req.params.app_id
+    );
 
+    if (req.params.id !== appointment.teacher_id) {
+      sendJSON(res, 401, { message: "the user does not have permission" });
+      return;
+    } else {
+      next();
+    }
+  });
+};
 export const isOwnerStudent = (
   req: IncomingAPIMessage,
   res: ServerResponse,

@@ -16,6 +16,7 @@ import {
   verifyUserExists,
   verifyTeacherIDExists,
   verifyStudentIDExists,
+  isAppointmentOwner,
 } from "./middleware";
 
 export const teachersController = new TeacherController();
@@ -168,6 +169,43 @@ app.addEndpoint(
     } catch (e) {
       res.writeHead(300);
       res.end();
+    }
+  }
+);
+
+app.addEndpoint(
+  "GET",
+  "/api/teachers/:id/appointments/:app_id/approve",
+  verifyUserExists,
+  isAppointmentOwner,
+  async (req, res) => {
+    const id = req.params.app_id;
+
+    try {
+      const appointment = await appointmentsController.approveAppointment(id);
+      sendJSON(res, 200, appointment);
+    } catch (e) {
+      res.writeHead(300);
+      res.end();
+    }
+  }
+);
+
+app.addEndpoint(
+  "GET",
+  "/api/teachers/:id/appointments/:app_id/reject",
+  verifyUserExists,
+  isAppointmentOwner,
+  async (req, res) => {
+    const id = req.params.app_id;
+
+    try {
+      const message: string = await appointmentsController.rejectAppointment(
+        id
+      );
+      sendJSON(res, 200, message);
+    } catch (error) {
+      sendJSON(res, 404, { message: error });
     }
   }
 );

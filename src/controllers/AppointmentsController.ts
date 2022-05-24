@@ -27,6 +27,17 @@ export class AppointmentsController {
     return this.allAppointments;
   }
 
+  getAppointment(id: string): Appointment {
+    const appointment = this.allAppointments.find(
+      (appointment) => appointment._id === id
+    );
+    if (appointment) {
+      return appointment;
+    } else {
+      throw `Appointment with id ${id} not found `;
+    }
+  }
+
   getTeacherAppointments(id: string): Appointment[] {
     return this.allAppointments.filter(
       (appointment) => appointment.teacher_id == id
@@ -83,5 +94,44 @@ export class AppointmentsController {
     } else {
       throw `AppointmentsController Error: Teacher ${teacher_id} does not have their hours set`;
     }
+  }
+
+  async approveAppointment(id: string): Promise<Appointment> {
+    let appointment: Appointment;
+
+    try {
+      appointment = this.getAppointment(id);
+    } catch (e) {
+      throw `Couldn't find teacher with ${id}`;
+    }
+
+    appointment.approved = true;
+
+    try {
+      const response = await AppointmentsDB.put(appointment);
+
+      this.getFromDB();
+
+      appointment._rev = response.rev;
+      return appointment;
+    } catch (e) {
+      throw `Couldn't approve appointment - ${e.message}`;
+    }
+  }
+
+  async rejectAppointment(id: string): Promise<string> {
+    try {
+      const appointmentToDelete = await this.getAppointment(id);
+      try {
+        AppointmentsDB.remove(appointmentToDelete);
+        this.getFromDB();
+      } catch (error) {
+        throw `Couldn't remove appointment ${error}`;
+      }
+    } catch (e) {
+      throw `Couldn't find appointment with ${id}`;
+    }
+
+    return `Appointment ${id} deleted successfully`;
   }
 }

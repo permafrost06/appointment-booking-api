@@ -9,6 +9,10 @@ const AppointmentsDB = new PouchDB("db/appointments.db");
 export class AppointmentsController {
   allAppointments: Appointment[] = [];
 
+  constructor() {
+    this.getFromDB();
+  }
+
   async getFromDB() {
     try {
       const query = await AppointmentsDB.allDocs({ include_docs: true });

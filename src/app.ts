@@ -383,11 +383,11 @@ app.addEndpoint(
 app.addEndpoint("POST", "/api/login/admin", async (req, res) => {
   const loginRequestObject = req.body.json;
   try {
-    const returnObj = adminController.signIn(
+    const token = adminController.signIn(
       loginRequestObject.username,
       loginRequestObject.password
     );
-    sendJSON(res, 200, { returnObj });
+    sendJSON(res, 200, { token });
   } catch (error) {
     sendJSON(res, 401, { message: "invalid credentials provided" });
   }
@@ -455,6 +455,17 @@ app.addEndpoint(
         message: `request ${req.params.id} not found`,
       });
     }
+  }
+);
+
+app.addEndpoint(
+  "GET",
+  "/api/admin/appointments",
+  verifyUserExists,
+  isAdmin,
+  async (req, res) => {
+    const appointments = appointmentsController.getAllAppointments();
+    sendJSON(res, 200, appointments);
   }
 );
 

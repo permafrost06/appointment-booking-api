@@ -464,7 +464,7 @@ app.addEndpoint(
   verifyUserExists,
   isAdmin,
   async (req, res) => {
-    const appointments = appointmentsController.getAllAppointments();
+    const appointments = await appointmentsController.getAllAppointments();
     sendJSON(res, 200, appointments);
   }
 );

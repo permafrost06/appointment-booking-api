@@ -1,8 +1,6 @@
-export interface Student {
-  _id: string;
+import { User } from "./User.model";
+
+export interface Student extends User {
   name: string;
-  email: string;
-  password: string;
   department: string;
-  _rev: string;
 }

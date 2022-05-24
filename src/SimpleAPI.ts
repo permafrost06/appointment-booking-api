@@ -1,3 +1,4 @@
+import { sendJSON } from "./utils";
 import { createServer, Server, IncomingMessage, ServerResponse } from "http";
 
 export class IncomingAPIMessage extends IncomingMessage {
@@ -30,27 +31,37 @@ export class SimpleAPI {
       async (req: IncomingAPIMessage, res: ServerResponse) => {
         this.#setCORSHeaders(res);
 
+        if (req.method === "OPTIONS") {
+          res.writeHead(200);
+          res.end();
+          return;
+        }
+
         const route = this.routeTable.find(
           (route) => req.url.match(route.regexp) && req.method === route.method
         );
 
-        if (req.url.match(route.regexp).groups) {
-          req.params = req.url.match(route.regexp).groups;
-        }
-
-        const body = await this.#getReqBody(req);
-
-        if (body) {
-          req.body = {
-            raw: body,
-            json: null,
-          };
-
-          try {
-            req.body.json = JSON.parse(body);
-          } catch (e) {
-            req.body.json = null;
+        if (route) {
+          if (req.url.match(route.regexp).groups) {
+            req.params = req.url.match(route.regexp).groups;
           }
+
+          const body = await this.#getReqBody(req);
+
+          if (body) {
+            req.body = {
+              raw: body,
+              json: null,
+            };
+
+            try {
+              req.body.json = JSON.parse(body);
+            } catch (e) {
+              req.body.json = null;
+            }
+          }
+        } else {
+          sendJSON(res, 404, { message: "route not found" });
         }
 
         // https://stackoverflow.com/a/60879046/14853035

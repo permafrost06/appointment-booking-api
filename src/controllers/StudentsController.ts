@@ -107,6 +107,7 @@ export class StudentController {
       } else throw `invalid credentials`;
     } else throw `invalid credentials`;
   }
+
   isStudent(token: string): boolean {
     try {
       interface Dec {

@@ -51,7 +51,7 @@ app.addEndpoint("POST", "/api/login/teacher", async (req, res) => {
       loginRequestObject.password
     );
 
-    sendJSON(res, 200, { returnObj });
+    sendJSON(res, 200, returnObj);
   } catch (error) {
     console.log(error);
     sendJSON(res, 401, { message: "invalid credentials provided" });
@@ -200,12 +200,10 @@ app.addEndpoint("POST", "/api/login/student", async (req, res) => {
       loginRequestObject.username,
       loginRequestObject.password
     );
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(returnObj));
+    sendJSON(res, 200, returnObj);
   } catch (error) {
     console.log(error);
-    res.writeHead(401, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "invalid credentials provided" }));
+    sendJSON(res, 401, { message: "invalid credentials provided" });
   }
 });
 

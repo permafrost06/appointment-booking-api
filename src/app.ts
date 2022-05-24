@@ -46,12 +46,12 @@ app.addEndpoint("POST", "/api/signup/teacher", async (req, res) => {
 app.addEndpoint("POST", "/api/login/teacher", async (req, res) => {
   const loginRequestObject = req.body.json;
   try {
-    const token = teachersController.signIn(
+    const returnObj = teachersController.signIn(
       loginRequestObject.username,
       loginRequestObject.password
     );
 
-    sendJSON(res, 200, { token });
+    sendJSON(res, 200, { returnObj });
   } catch (error) {
     console.log(error);
     sendJSON(res, 401, { message: "invalid credentials provided" });
@@ -194,13 +194,14 @@ app.addEndpoint("POST", "/api/signup/student", async (req, res) => {
 
 app.addEndpoint("POST", "/api/login/student", async (req, res) => {
   const loginRequestObject = req.body.json;
+
   try {
-    const token = studentsController.signIn(
+    const returnObj = studentsController.signIn(
       loginRequestObject.username,
       loginRequestObject.password
     );
     res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ token }));
+    res.end(JSON.stringify(returnObj));
   } catch (error) {
     console.log(error);
     res.writeHead(401, { "Content-Type": "application/json" });
@@ -306,11 +307,11 @@ app.addEndpoint(
 app.addEndpoint("POST", "/api/login/admin", async (req, res) => {
   const loginRequestObject = req.body.json;
   try {
-    const token = adminController.signIn(
+    const returnObj = adminController.signIn(
       loginRequestObject.username,
       loginRequestObject.password
     );
-    sendJSON(res, 200, { token });
+    sendJSON(res, 200, { returnObj });
   } catch (error) {
     sendJSON(res, 401, { message: "invalid credentials provided" });
   }

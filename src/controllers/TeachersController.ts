@@ -1,6 +1,7 @@
 import { Teacher } from "../models/Teacher.model";
 import PouchDB from "pouchdb";
 import * as jwt from "jsonwebtoken";
+import { SignInResponse } from "../models/Misc.model";
 
 const TeachersDB = new PouchDB("db/teachers.db");
 
@@ -84,7 +85,7 @@ export class TeacherController {
     return `Teacher ${id} deleted successfully`;
   }
 
-  signIn(username: string, password: string): string {
+  signIn(username: string, password: string): SignInResponse {
     const matchTeacherArray = this.allTeachers.filter(
       (teacher) => teacher.email === username
     );
@@ -98,7 +99,11 @@ export class TeacherController {
           _id: teacherObj._id,
         };
 
-        return jwt.sign(data, this.jwtSecretKey);
+        const token = jwt.sign(data, this.jwtSecretKey);
+        return {
+          token,
+          userObj: teacherObj,
+        };
       } else throw `invalid credentials`;
     } else throw `invalid credentials`;
   }

@@ -1,5 +1,6 @@
 import * as jwt from "jsonwebtoken";
 import PouchDB from "pouchdb";
+import { SignInResponse } from "../models/Misc.model";
 
 const requestsDB = new PouchDB("db/requests.db");
 
@@ -30,13 +31,21 @@ export class AdminController {
     }
   }
 
-  signIn(username: string, password: string): string {
+  signIn(username: string, password: string): SignInResponse {
     if (username === "admin" && password === "password") {
       const data = {
         userLevel: "admin",
       };
-
-      return jwt.sign(data, this.jwtSecretKey);
+      const token = jwt.sign(data, this.jwtSecretKey);
+      return {
+        token,
+        userObj: {
+          _id: "admin",
+          email: "admin",
+          password: "password",
+          _rev: "1",
+        },
+      };
     } else throw `invalid credentials`;
   }
 

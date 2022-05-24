@@ -60,22 +60,22 @@ export class SimpleAPI {
               req.body.json = null;
             }
           }
+
+          // https://stackoverflow.com/a/60879046/14853035
+          const callFuncChain = (req, res, func_list) => {
+            if (func_list.length === 0) return;
+
+            const current_func = func_list[0];
+
+            current_func(req, res, () => {
+              callFuncChain(req, res, func_list.slice(1));
+            });
+          };
+
+          callFuncChain(req, res, route.functions);
         } else {
           sendJSON(res, 404, { message: "route not found" });
         }
-
-        // https://stackoverflow.com/a/60879046/14853035
-        const callFuncChain = (req, res, func_list) => {
-          if (func_list.length === 0) return;
-
-          const current_func = func_list[0];
-
-          current_func(req, res, () => {
-            callFuncChain(req, res, func_list.slice(1));
-          });
-        };
-
-        callFuncChain(req, res, route.functions);
       }
     );
   }

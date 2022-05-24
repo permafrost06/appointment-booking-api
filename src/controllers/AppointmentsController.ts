@@ -44,6 +44,12 @@ export class AppointmentsController {
     );
   }
 
+  getTeacherPendingAppointments(id: string): Appointment[] {
+    return this.getTeacherAppointments(id).filter(
+      (appointment) => !appointment.approved
+    );
+  }
+
   getTeacherApprovedAppointments(id: string): Appointment[] {
     return this.getTeacherAppointments(id).filter(
       (appointment) => appointment.approved

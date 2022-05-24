@@ -175,6 +175,25 @@ app.addEndpoint(
 
 app.addEndpoint(
   "GET",
+  "/api/teachers/:id/appointments/pending",
+  verifyUserExists,
+  verifyTeacherIDExists,
+  async (req, res) => {
+    const id = req.params.id;
+
+    try {
+      const appointments =
+        await appointmentsController.getTeacherPendingAppointments(id);
+      sendJSON(res, 200, appointments);
+    } catch (e) {
+      res.writeHead(300);
+      res.end();
+    }
+  }
+);
+
+app.addEndpoint(
+  "GET",
   "/api/teachers/:id/appointments/:app_id/approve",
   verifyUserExists,
   isAppointmentOwner,

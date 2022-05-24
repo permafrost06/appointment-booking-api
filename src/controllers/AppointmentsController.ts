@@ -102,6 +102,21 @@ export class AppointmentsController {
     }
   }
 
+  async createAppointment(
+    newAppointmentObj: Appointment
+  ): Promise<Appointment> {
+    try {
+      const response = await AppointmentsDB.put(newAppointmentObj);
+
+      this.getFromDB();
+
+      newAppointmentObj._rev = response.rev;
+      return newAppointmentObj;
+    } catch (e) {
+      throw `Couldn't create appointment - ${e.message}`;
+    }
+  }
+
   async approveAppointment(id: string): Promise<Appointment> {
     let appointment: Appointment;
 

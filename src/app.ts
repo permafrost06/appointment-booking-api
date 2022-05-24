@@ -18,6 +18,7 @@ import {
   verifyStudentIDExists,
   isAppointmentOwner,
 } from "./middleware";
+import { Appointment } from "./models/Appointment.model";
 
 export const teachersController = new TeacherController();
 export const studentsController = new StudentController();
@@ -466,6 +467,24 @@ app.addEndpoint(
   async (req, res) => {
     const appointments = await appointmentsController.getAllAppointments();
     sendJSON(res, 200, appointments);
+  }
+);
+
+app.addEndpoint(
+  "POST",
+  "/api/admin/appointments",
+  verifyUserExists,
+  isAdmin,
+  async (req, res) => {
+    const newAppointmentObj = req.body.json as unknown;
+    try {
+      const appointment = await appointmentsController.createAppointment(
+        newAppointmentObj as Appointment
+      );
+      sendJSON(res, 200, appointment);
+    } catch (error) {
+      sendJSON(res, 404, { message: error });
+    }
   }
 );
 

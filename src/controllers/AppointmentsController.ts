@@ -46,13 +46,13 @@ export class AppointmentsController {
 
   getTeacherPendingAppointments(id: string): Appointment[] {
     return this.getTeacherAppointments(id).filter(
-      (appointment) => !appointment.approved
+      (appointment) => !appointment.approved == false
     );
   }
 
   getTeacherApprovedAppointments(id: string): Appointment[] {
     return this.getTeacherAppointments(id).filter(
-      (appointment) => appointment.approved
+      (appointment) => appointment.approved == true
     );
   }
 
@@ -105,6 +105,7 @@ export class AppointmentsController {
   async createAppointment(
     newAppointmentObj: Appointment
   ): Promise<Appointment> {
+    console.log(newAppointmentObj.approved);
     try {
       const response = await AppointmentsDB.put(newAppointmentObj);
 
